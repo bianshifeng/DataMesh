@@ -1,0 +1,161 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using DataMesh.AR;
+using DataMesh.AR.Utility;
+
+[CustomEditor(typeof(MEHoloEntrance))]
+public class MEHoloEntranceEditor : Editor
+{
+    private string newId;
+
+    private void InstantiatePrefabToParent(GameObject prefab, Transform root)
+    {
+        if (prefab == null)
+            return;
+        GameObject obj;
+        obj = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+        obj.transform.SetParent(root);
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localRotation = Quaternion.identity;
+    }
+
+    public override void OnInspectorGUI()
+    {
+
+        MEHoloEntrance entrance = (MEHoloEntrance)target;
+
+        GameObject holoRoot = GameObject.Find("MEHolo");
+        if (holoRoot == null)
+        {
+            base.OnInspectorGUI();
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            if (GUILayout.Button("Create All MEHolo Module"))
+            {
+                holoRoot = new GameObject("MEHolo");
+
+                InstantiatePrefabToParent(entrance.AccountPrefab, holoRoot.transform);
+#if true // UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WSA
+                InstantiatePrefabToParent(entrance.AnchorPrefab, holoRoot.transform);
+#endif
+                InstantiatePrefabToParent(entrance.InputPrefab, holoRoot.transform);
+                InstantiatePrefabToParent(entrance.SpeechPrefab, holoRoot.transform);
+                InstantiatePrefabToParent(entrance.UIPerfab, holoRoot.transform);
+                InstantiatePrefabToParent(entrance.CollaborationPrefab, holoRoot.transform);
+                InstantiatePrefabToParent(entrance.LibraryPrefab, holoRoot.transform);
+                InstantiatePrefabToParent(entrance.LivePrefab, holoRoot.transform);
+
+            }
+
+            return;
+        }
+
+        GUI.changed = false;
+
+        GUIStyle nameStyle = new GUIStyle(GUI.skin.box);
+        nameStyle.fontSize = 20;
+        nameStyle.padding = new RectOffset(10, 10, 10, 10);
+        nameStyle.margin = new RectOffset(10, 10, 10, 10);
+
+        string showName = null;
+        bool needInput = false;
+        if (string.IsNullOrEmpty(entrance.AppID))
+        {
+            showName = "Please Set App ID";
+            nameStyle.normal.textColor = new Color(0.7f, 0f, 0f);
+            needInput = true;
+        }
+        else
+        {
+            showName = "App ID: " + entrance.AppID;
+            nameStyle.normal.textColor = new Color(0f, 0.7f, 0f);
+            needInput = false;
+        }
+
+        GUILayout.Box(showName, nameStyle);
+        if (needInput)
+        {
+            newId = EditorGUILayout.TextField("App ID:", newId);
+            if (GUILayout.Button("Set App ID"))
+            {
+                entrance.AppID = newId;
+            }
+        }
+        else
+        {
+            if (GUILayout.Button("Remove this id"))
+            {
+                if (EditorUtility.DisplayDialog("Confirm", "Do you want to delete this id?", "Confirm", "Cancel"))
+                {
+                    entrance.AppID = null;
+                }
+            }
+        }
+
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        entrance.NeedAccount = EditorGUILayout.Toggle("If Need Account:", entrance.NeedAccount);
+
+#if true // UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WSA
+
+        // Anchor默认开启，不可关闭 
+        entrance.NeedAnchor = true;
+        /*
+        entrance.NeedAnchor = EditorGUILayout.Toggle("If Need Anchor:", entrance.NeedAnchor);
+        if (entrance.NeedAnchor)
+        {
+            entrance.NeedInput = true;
+        }
+        */
+#endif
+
+        // Input默认开启，不可关闭 
+        //entrance.NeedInput = EditorGUILayout.Toggle("If Need Input:", entrance.NeedInput);
+        entrance.NeedInput = true;
+        // UI默认开启，不可关闭 
+        //entrance.NeedUI = EditorGUILayout.Toggle("If Need UI:", entrance.NeedUI);
+        entrance.NeedUI = true;
+
+        entrance.NeedCollaboration = EditorGUILayout.Toggle("If Need Collaboration:", entrance.NeedCollaboration);
+        entrance.NeedLibrary = EditorGUILayout.Toggle("If Need Library:", entrance.NeedLibrary);
+
+        // Speech默认开启，不可关闭 
+        //entrance.NeedSpeech = EditorGUILayout.Toggle("If Need Speech:", entrance.NeedSpeech);
+        entrance.NeedSpeech = true;
+
+        entrance.NeedLive = EditorGUILayout.Toggle("If Need Live!:", entrance.NeedLive);
+        if (entrance.NeedLive)
+        {
+#if true // UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WSA
+            entrance.NeedAnchor = true;
+#endif
+        }
+
+
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        if (EditorTools.DrawHeader("Toolkit Settings"))
+        {
+            EditorTools.BeginContents();
+
+            entrance.systemMenuData = (TextAsset)EditorGUILayout.ObjectField("System Menu Data", entrance.systemMenuData, typeof(TextAsset), false);
+
+            EditorTools.EndContents();
+        }
+
+
+        if (GUI.changed)
+        {
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene());
+            EditorUtility.SetDirty(entrance);
+        }
+
+    }
+
+}

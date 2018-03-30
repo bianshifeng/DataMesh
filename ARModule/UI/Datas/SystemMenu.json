@@ -1,0 +1,59 @@
+{
+  "name": "__System__Menu__",
+  "rootPanel": {
+    "buttons": [
+      {
+        "buttonId": "Marker",
+        "buttonName": "Marker",
+        "buttonColor": {
+          "r": 0.0117647061,
+          "g": 0.6627451,
+          "b": 0.956862748,
+          "a": 1.0
+        },
+        "buttonPic": "System_Menu_Icon_Marker",
+        "canClick": true,
+        "subPanel": null
+      },
+      {
+        "buttonId": "SetAnchor",
+        "buttonName": "Set Anchor",
+        "buttonColor": {
+          "r": 0.0117647061,
+          "g": 0.6627451,
+          "b": 0.956862748,
+          "a": 1.0
+        },
+        "buttonPic": "System_Menu_Icon_Anchor",
+        "canClick": true,
+        "subPanel": null
+      },
+      {
+        "buttonId": "Account",
+        "buttonName": "Account",
+        "buttonColor": {
+          "r": 0.0117647061,
+          "g": 0.6627451,
+          "b": 0.956862748,
+          "a": 1.0
+        },
+        "buttonPic": "System_Menu_Icon_Account",
+        "canClick": true,
+        "subPanel": null
+      },
+      {
+        "buttonId": "Config",
+        "buttonName": "Config",
+        "buttonColor": {
+          "r": 0.0117647061,
+          "g": 0.6627451,
+          "b": 0.956862748,
+          "a": 1.0
+        },
+        "buttonPic": "System_Menu_Icon_Config",
+        "canClick": true,
+        "subPanel": null
+      }
+    ]
+  }
+}
